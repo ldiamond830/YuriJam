@@ -12,8 +12,8 @@ public class TowerGridGhost : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        RefreshVisual();
-
+        //RefreshVisual();
+        transform.localScale = Vector3.one * TowerGrid.Instance.cellSize;
         TowerGrid.Instance.OnSelectionChange += OnSelectionChange;
         TowerGrid.Instance.OnCellMove += OnCellMove;
     }
@@ -27,13 +27,14 @@ public class TowerGridGhost : MonoBehaviour
     private void OnSelectionChange(object sender, EventArgs e)
     {
         // Reset validity indicator
-        RefreshVisual();
+        //RefreshVisual();
         // If data != null, revisualize validity
     }
 
     private void OnCellMove(object sender, GridMoveEventArgs e)
     {
-        // Update validity visuals
+        // Toggle visibility if outside of grid bounds
+        transform.GetChild(0).gameObject.SetActive(e.currGridPosition != TowerGrid.Instance.OFFGRID_POS);
     }
 
     private void RefreshVisual()

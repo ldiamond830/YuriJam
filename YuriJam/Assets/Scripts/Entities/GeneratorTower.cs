@@ -11,5 +11,6 @@ public class GeneratorTower : Tower
     protected override void TakeAction()
     {
         Inventory.Instance.AddAmount(resource);
+        Debug.Log("Generated " + resource);
     }
 }

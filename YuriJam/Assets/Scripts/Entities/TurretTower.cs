@@ -11,5 +11,6 @@ public class TurretTower : Tower
     protected override void TakeAction()
     {
         // Create projectile using stats
+        Debug.Log("Attack!");
     }
 }

@@ -10,7 +10,10 @@ public class TowerGrid : MonoBehaviour
     public int gridWidth;
     public int gridHeight;
     public float cellSize;
+    public Vector2 origin;
+    public bool centeredOrigin;                                         // Whether origin defines center or bottom-left of grid
     private Vector2Int currCellGridPos = Vector2Int.zero;
+    public readonly Vector2Int OFFGRID_POS = new Vector2Int(-1, -1);    // Const for position outside of grid bounds
 
     // Building selection fields
     [SerializeField] private List<TowerSO> towerTypes;
@@ -51,12 +54,17 @@ public class TowerGrid : MonoBehaviour
         else
             Instance = this;
 
+        // Determine grid origin
+        Vector3 gridOrigin = new Vector3(origin.x, origin.y);
+        if (centeredOrigin)
+            gridOrigin += new Vector3(gridWidth, gridHeight) * -cellSize / 2f;
+
         // Instantiate new grid
         grid = new Grid<TowerGridObject>(
             gridWidth,
             gridHeight,
             cellSize,
-            new Vector3(gridWidth, gridHeight) * -cellSize / 2f,
+            gridOrigin,
             (Grid<TowerGridObject> g, int x, int y) =>
             {
                 return new TowerGridObject(g, x, y);
@@ -146,28 +154,37 @@ public class TowerGrid : MonoBehaviour
     public bool MoveToMouseCell()
     {
         grid.GetXY(GetMouseWorldPosition(), out int x, out int y);
-        Vector2Int newGridPos = new(x, y);
-        if (newGridPos.x < 0 || newGridPos.x >= gridWidth || newGridPos.y < 0 || newGridPos.y >= gridHeight) return false;
 
-        // If grid position has changed, update stored position
-        if (currCellGridPos != newGridPos)
-        {
-            OnCellMove?.Invoke(this, new GridMoveEventArgs(currCellGridPos, newGridPos));
-            currCellGridPos = newGridPos;
-        }
-
-        return true;
+        return MoveToCell(x, y);
     }
 
     // Update current cell position by given offsets
     // Returns false if new cell position is outside of grid bounds
-    public bool MoveCurrentCell(int dx, int dy)
+    public bool MoveCurrentCellBy(int dx, int dy)
     {
-        if (dx == 0 && dy == 0) return true;
+        if (currCellGridPos == OFFGRID_POS)
+            return MoveToCell(dx, dy);
 
-        Vector2Int newGridPos = new(currCellGridPos.x + dx, currCellGridPos.y + dy);
-        if (newGridPos.x < 0 || newGridPos.x >= gridWidth || newGridPos.y < 0 || newGridPos.y >= gridHeight) return false;
+        return MoveToCell(currCellGridPos.x + dx, currCellGridPos.y + dy);
+    }
 
+    // Sets current cell position to given position
+    // Returns false if new cell position is outside of grid bounds
+    public bool MoveToCell(int x, int y)
+    {
+        if (x == currCellGridPos.x && y == currCellGridPos.y) return true;
+
+        Vector2Int newGridPos = new(x, y);
+
+        // If target position is out of bounds, set to off-grid position 
+        if (newGridPos.x < 0 || newGridPos.x >= gridWidth || newGridPos.y < 0 || newGridPos.y >= gridHeight)
+        {
+            OnCellMove?.Invoke(this, new GridMoveEventArgs(currCellGridPos, OFFGRID_POS));
+            currCellGridPos = OFFGRID_POS;
+            return false;
+        }
+
+        // If grid position has changed, update stored position
         OnCellMove?.Invoke(this, new GridMoveEventArgs(currCellGridPos, newGridPos));
         currCellGridPos = newGridPos;
         return true;

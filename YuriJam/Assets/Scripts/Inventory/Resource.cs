@@ -13,4 +13,9 @@ public class Resource
 {
     public Resources type;
     public int amount;
+
+    public override string ToString()
+    {
+        return amount.ToString() + " " + type.ToString();
+    }
 }
