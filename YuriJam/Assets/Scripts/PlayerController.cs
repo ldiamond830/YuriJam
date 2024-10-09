@@ -15,4 +15,9 @@ public class PlayerController : MonoBehaviour
     {
         TowerGrid.Instance.MoveToMouseCell();
     }
+
+    public void OnBuild()
+    {
+        TowerGrid.Instance.PlaceTower();
+    }
 }

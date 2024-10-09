@@ -17,7 +17,7 @@ public class TowerGrid : MonoBehaviour
 
     // Building selection fields
     [SerializeField] private List<TowerSO> towerTypes;
-    private int selectionIndex = 0;
+    private int selectionIndex = -1;
 
     // Event fields
     public event EventHandler<GridSelectEventArgs> OnSelectionChange;
@@ -90,7 +90,14 @@ public class TowerGrid : MonoBehaviour
             return false;
         }
 
-        // VERIFY BUILD COST
+        // VERIFY SELECTION AND BUILD COST
+        // Ensure a valid build option is selected
+        if (selectionIndex == -1)
+        {
+            Debug.Log("Cannot build: No tower selected!");
+            return false;
+        }
+
         // Remove resources from inventory, or cancel build if there are insufficient resources
         if (!Inventory.Instance.RemoveAmount(towerTypes[selectionIndex].buildCost))
         {
@@ -102,6 +109,7 @@ public class TowerGrid : MonoBehaviour
         // If selected cell is vacant and cost is met, instantiate tower and store reference in selected cell
         Tower newTower = Tower.Create(grid.GetWorldPosition(gridX, gridY), towerTypes[selectionIndex]);
         newTower.transform.parent = transform.parent;
+        newTower.transform.localScale = Vector3.one * cellSize;
         grid.GetItem(gridX, gridY).Tower = newTower;
 
         Debug.Log(towerTypes[selectionIndex].name + " has been built!");

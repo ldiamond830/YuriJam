@@ -12,11 +12,6 @@ public class Inventory : MonoBehaviour
 
     // Event for notifying on changes in resource amounts
     public EventHandler<OnResourceAmountUpdatedEventArgs> OnResourceAmountUpdated;
-    public class OnResourceAmountUpdatedEventArgs : EventArgs
-    {
-        public Resources type;
-        public int newAmount;
-    }
 
     // Properties
     public static Inventory Instance
@@ -105,4 +100,10 @@ public class Inventory : MonoBehaviour
         // All removals were successful
         return true;
     }
+}
+
+public class OnResourceAmountUpdatedEventArgs : EventArgs
+{
+    public Resources type;
+    public int newAmount;
 }

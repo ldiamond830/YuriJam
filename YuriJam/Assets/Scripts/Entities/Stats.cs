@@ -44,6 +44,7 @@ public struct Stats
     }
 }
 
+[Serializable]
 public struct TowerStats
 {
     public Stats baseStats; // Tower health and power
@@ -85,6 +86,7 @@ public struct TowerStats
     }
 }
 
+[Serializable]
 public struct EnemyStats
 {
     public Stats baseStats; // Enemy health and power

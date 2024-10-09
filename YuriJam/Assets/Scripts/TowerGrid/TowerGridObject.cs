@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -20,6 +21,9 @@ public class TowerGridObject : GridObject
         set
         {
             tower = value;
+            if (tower != null)
+                tower.OnDeath += (object o, EventArgs e) => { Tower = null; };
+
             grid.FlagDirty(x, y);
         }
     }

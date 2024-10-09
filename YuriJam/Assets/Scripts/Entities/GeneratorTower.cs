@@ -5,12 +5,12 @@ using UnityEngine;
 public class GeneratorTower : Tower
 {
     // Fields
-    public Resource resource;
+    public Resources resource;
 
     // Methods
     protected override void TakeAction()
     {
-        Inventory.Instance.AddAmount(resource);
-        Debug.Log("Generated " + resource);
+        Inventory.Instance.AddAmount(resource, stats.baseStats.power);
+        Debug.Log("Generated " + stats.baseStats.power + " " + resource);
     }
 }

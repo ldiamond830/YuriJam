@@ -5,12 +5,15 @@ using UnityEngine;
 public class TurretTower : Tower
 {
     // Fields
+    public Transform projectile;
+    public bool isPiercing;
 
-
-    // Methods
     protected override void TakeAction()
     {
         // Create projectile using stats
-        Debug.Log("Attack!");
+        Projectile p = Instantiate(projectile, transform.position + Vector3.one * transform.localScale.x / 2, Quaternion.identity).GetComponent<Projectile>();
+        p.transform.localScale *= transform.localScale.x;
+        p.Initialize(stats.baseStats.power, stats.range * transform.localScale.x, isPiercing);
+        p.Fire();
     }
 }

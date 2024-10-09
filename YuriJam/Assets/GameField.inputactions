@@ -1,0 +1,34 @@
+{
+    "name": "GameField",
+    "maps": [
+        {
+            "name": "TowerGrid",
+            "id": "009744b8-f87a-4fb8-994c-16a87722bae1",
+            "actions": [
+                {
+                    "name": "Build",
+                    "type": "Button",
+                    "id": "f3fb4599-062e-499f-ae14-f7cad164c6b0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "1d1ab056-cc7d-4167-89fc-d31f758748b7",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Build",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
