@@ -63,9 +63,9 @@ public class Projectile : MonoBehaviour
         return true;
     }
 
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (isLive && collision.collider.transform.parent.TryGetComponent<Enemy>(out Enemy enemy))
+        if (isLive && collision.transform.TryGetComponent<Enemy>(out Enemy enemy))
         {
             enemy.TakeDamage(power);
 

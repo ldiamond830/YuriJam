@@ -15,8 +15,26 @@ public class TowerGrid : MonoBehaviour
     private Vector2Int currCellGridPos = Vector2Int.zero;
     public readonly Vector2Int OFFGRID_POS = new Vector2Int(-1, -1);    // Const for position outside of grid bounds
 
+    //enemy fields
+    [SerializeField]
+    [Range(1.0f, 3.0f)]
+    private float minSpawnTime;
+    [SerializeField]
+    [Range(4.0f, 6.0f)]
+    private float maxSpawnTime;
+    private float spawnTimer;
+    [SerializeField] private List<EnemySpawnSO> enemiesToSpawn;
+    private int enemyCount;
+
+    public int EnemyCount
+    {
+        get { return enemyCount; }
+        set { enemyCount = value; }
+    }
+
     // Building selection fields
     [SerializeField] private List<TowerSO> towerTypes;
+   
     private int selectionIndex = -1;
 
     // Event fields
@@ -69,7 +87,32 @@ public class TowerGrid : MonoBehaviour
             {
                 return new TowerGridObject(g, x, y);
             });
+
+        foreach(EnemySpawnSO enemySpawn in enemiesToSpawn)
+        {
+            enemySpawn.remaining = enemySpawn.total;
+        }
+
+        SetSpawnTimer();
     }
+
+    private void Update()
+    {
+        if(spawnTimer <= 0)
+        {
+            SpawnEnemy();
+            SetSpawnTimer();
+        }
+
+        spawnTimer -= Time.deltaTime;
+
+        //when all enemies on screen are dead and there are none left to spawn player wins
+        if(enemyCount == 0 && enemiesToSpawn.Count == 0)
+        {
+            Debug.Log("Player wins");
+        }
+    }
+
 
     // Attempts to create a new tower at given grid position
     // Returns true if new tower was successfully placed
@@ -110,6 +153,7 @@ public class TowerGrid : MonoBehaviour
         Tower newTower = Tower.Create(grid.GetWorldPosition(gridX, gridY), towerTypes[selectionIndex]);
         newTower.transform.parent = transform.parent;
         newTower.transform.localScale = Vector3.one * cellSize;
+        newTower.rowNum = gridY;
         grid.GetItem(gridX, gridY).Tower = newTower;
 
         Debug.Log(towerTypes[selectionIndex].name + " has been built!");
@@ -204,6 +248,35 @@ public class TowerGrid : MonoBehaviour
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         worldPos.z = 0f;
         return worldPos;
+    }
+
+    private void SpawnEnemy()
+    {
+        if(enemiesToSpawn.Count != 0)
+        {
+            enemyCount++;
+
+            int enemyType = UnityEngine.Random.Range(0, enemiesToSpawn.Count - 1);
+            int row = UnityEngine.Random.Range(0, gridHeight);
+
+            Enemy newEnemy = Instantiate(enemiesToSpawn[enemyType].Prefab).GetComponent<Enemy>();
+            newEnemy.transform.position = grid.GetWorldPosition(gridWidth, row);
+            newEnemy.transform.localScale = Vector3.one * cellSize;
+            newEnemy.rowNum = row;
+            newEnemy.desination = grid.GetWorldPosition(-3, row); //keeps enemy moving until it reaches off screen
+            newEnemy.Parent = this;
+
+            enemiesToSpawn[enemyType].remaining--;
+            if (enemiesToSpawn[enemyType].remaining <= 0)
+            {
+                enemiesToSpawn.RemoveAt(enemyType);
+            }
+        }
+    }
+
+    private void SetSpawnTimer()
+    {
+        spawnTimer = UnityEngine.Random.Range(minSpawnTime, maxSpawnTime);
     }
 }
 

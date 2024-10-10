@@ -17,7 +17,7 @@ public class Tower : MonoBehaviour
     // Fields
     public TowerStats stats;
     private float actCooldown;
-
+    public int rowNum;
     // Events
     public event EventHandler<EventArgs> OnDeath;
 
