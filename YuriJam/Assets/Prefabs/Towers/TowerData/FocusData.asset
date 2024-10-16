@@ -9,9 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 056fc66ea3cbeb942918e0ab9073b4e8, type: 3}
-  m_Name: PrototypeEnemySpawnList
+  m_Script: {fileID: 11500000, guid: 334c2707e8f7ec84397366ff2b1bb6c3, type: 3}
+  m_Name: FocusData
   m_EditorClassIdentifier: 
-  Prefab: {fileID: 2166627192443224314, guid: 9438385a3a7391d46892a9aea8646a00, type: 3}
-  total: 10
-  remaining: 2
+  name: Beam
+  prefab: {fileID: 5822434796599325452, guid: 488cb681b6200d440ba3d256ece6d083, type: 3}
+  buildCost:
+    type: 0
+    amount: 70

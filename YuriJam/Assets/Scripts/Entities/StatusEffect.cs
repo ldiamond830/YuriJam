@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
+using Unity.VisualScripting.Antlr3.Runtime.Misc;
 using UnityEngine;
 
 public enum StatusEffects
@@ -63,7 +64,7 @@ public abstract class StatusEffect
 public class BurnSE : StatusEffect
 {
     // Fields
-    private const float burnTick = 0.5f;
+    private const float burnTick = 1f;
     private float burnTime = 0;
 
     // Constructor
@@ -128,7 +129,10 @@ public class HarvestSE : StatusEffect
             return;
 
         base.Afflict(e);
-        e.OnDeath += (object o, EventArgs e) => { Inventory.Instance.AddAmount(resource, power); };
+        e.OnDeath += (object o, EventArgs ea) => { 
+            Inventory.Instance.AddAmount(resource, power);
+            MainHUD.CreateFadeMessage(e.Center, "+" + power + " " + resource, 1f, Color.green, 10);
+        };
     }
 
     public override void Process(float dt)
@@ -166,5 +170,6 @@ public class ShatterSE : StatusEffect
     private void Stack(ShatterSE shatter)
     {
         power += shatter.power;
+        duration = shatter.duration;
     }
 }

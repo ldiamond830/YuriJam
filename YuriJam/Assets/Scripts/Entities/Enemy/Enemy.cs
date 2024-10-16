@@ -14,7 +14,7 @@ public class Enemy : MonoBehaviour
 {
     // Fields
     public EnemyStats stats;
-    public Vector3 desination;
+    public Vector3 destination;
     public int rowNum;
     private Tower target;
     private float attackTimer;
@@ -30,6 +30,10 @@ public class Enemy : MonoBehaviour
     public List<StatusEffect> Afflictions
     {
         get { return afflictions; }
+    }
+    public Vector3 Center
+    {
+        get { return transform.position + (Vector3.one * transform.localScale.x / 2); }
     }
 
     // Events 
@@ -47,33 +51,34 @@ public class Enemy : MonoBehaviour
         switch(enemyMode)
         {
             case EnemyMode.move:
-                Vector3 direction = (desination - transform.position).normalized;
+                Vector3 direction = (destination - transform.position).normalized;
                 transform.position += stats.moveSpeed * direction * Time.deltaTime;
                 break;
             case EnemyMode.attack:
-
-                if(attackTimer == 0)
+                attackTimer -= Time.deltaTime;
+                if (attackTimer <= 0)
                 {
-                    attackTimer = stats.actSpeed;
+                    attackTimer += stats.actSpeed;
                     Attack();
-                }
-                else
-                {
-
                 }
 
                 break;
         }
+
+        ProcessAfflictions();
     }
 
     public void TakeDamage(int dmg)
     {
+        if (dmg == 0) return;
+
         stats.baseStats.currHealth -= dmg;
+        MainHUD.CreateFadeMessage(Center, "-" + dmg, 0.5f, Color.red, 10);
+        Debug.Log(dmg + " damage taken");
 
         if (stats.baseStats.currHealth <= 0)
         {
             OnDeath?.Invoke(this, new EventArgs());
-            parent.EnemyCount--;
             Destroy(gameObject);
         }
     }
@@ -91,25 +96,34 @@ public class Enemy : MonoBehaviour
         TakeDamage(attack.power);
     }
 
-    public void OnTriggerEnter2D(Collider2D collision)
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        var tower = collision.GetComponent<Tower>();
-        if (tower != null && tower.rowNum == rowNum) 
+        var tower = collision.transform.GetComponent<Tower>();
+        if (tower != null && tower.rowNum == rowNum)
         {
             target = tower;
             enemyMode = EnemyMode.attack;
         }
     }
 
-    public void OnTriggerExit2D(Collider2D collision)
+    private void OnCollisionExit2D(Collision2D collision)
     {
-        target = null;
-        enemyMode = EnemyMode.move;
+        if (collision.transform.CompareTag("Tower"))
+        {
+            target = null;
+            enemyMode = EnemyMode.move;
+        }
     }
 
     private void Attack()
     {
         Debug.Log("Enemy Attack");
         target.TakeDamage(stats.baseStats.power);
+    }
+
+    private void ProcessAfflictions()
+    {
+        foreach (StatusEffect se in afflictions)
+            se.Process(Time.deltaTime);
     }
 }

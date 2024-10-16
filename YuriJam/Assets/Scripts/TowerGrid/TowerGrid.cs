@@ -13,24 +13,7 @@ public class TowerGrid : MonoBehaviour
     public Vector2 origin;
     public bool centeredOrigin;                                         // Whether origin defines center or bottom-left of grid
     private Vector2Int currCellGridPos = Vector2Int.zero;
-    public readonly Vector2Int OFFGRID_POS = new Vector2Int(-1, -1);    // Const for position outside of grid bounds
-
-    //enemy fields
-    [SerializeField]
-    [Range(1.0f, 3.0f)]
-    private float minSpawnTime;
-    [SerializeField]
-    [Range(4.0f, 6.0f)]
-    private float maxSpawnTime;
-    private float spawnTimer;
-    [SerializeField] private List<EnemySpawnSO> enemiesToSpawn;
-    private int enemyCount;
-
-    public int EnemyCount
-    {
-        get { return enemyCount; }
-        set { enemyCount = value; }
-    }
+    public readonly Vector2Int OFFGRID_POS = new(-1, -1);    // Const for position outside of grid bounds
 
     // Building selection fields
     [SerializeField] private List<TowerSO> towerTypes;
@@ -87,30 +70,6 @@ public class TowerGrid : MonoBehaviour
             {
                 return new TowerGridObject(g, x, y);
             });
-
-        foreach(EnemySpawnSO enemySpawn in enemiesToSpawn)
-        {
-            enemySpawn.remaining = enemySpawn.total;
-        }
-
-        SetSpawnTimer();
-    }
-
-    private void Update()
-    {
-        if(spawnTimer <= 0)
-        {
-            SpawnEnemy();
-            SetSpawnTimer();
-        }
-
-        spawnTimer -= Time.deltaTime;
-
-        //when all enemies on screen are dead and there are none left to spawn player wins
-        if(enemyCount == 0 && enemiesToSpawn.Count == 0)
-        {
-            Debug.Log("Player wins");
-        }
     }
 
 
@@ -201,6 +160,19 @@ public class TowerGrid : MonoBehaviour
         }
     }
 
+    // Get tower stored at given grid position if one exists
+    public Tower GetTowerAt(int gridX, int gridY)
+    {
+        return grid.GetItem(gridX, gridY).Tower;
+    }
+
+
+    // Get tower stored at current grid position if one exists
+    public Tower GetTowerAtCurrent()
+    {
+        return GetTowerAt(currCellGridPos.x, currCellGridPos.y);
+    }
+
     // Update current cell position to mouse position
     // Returns false if mouse is outside of grid bounds
     public bool MoveToMouseCell()
@@ -242,41 +214,25 @@ public class TowerGrid : MonoBehaviour
         return true;
     }
 
+    // Calculates the grid position of the given world coordinates
+    public Vector2Int GetGridPositionAt(Vector3 worldPos)
+    {
+        grid.GetXY(worldPos, out int x, out int y);
+        return new Vector2Int(x, y);
+    }
+
+    public Vector3 GetWorldPositionAt(int gridX, int gridY)
+    {
+        return grid.GetWorldPosition(gridX, gridY);
+    }
+
+
     // Utility method: convert mouse screen position to world XY coordinates
     private Vector3 GetMouseWorldPosition()
     {
         Vector3 worldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         worldPos.z = 0f;
         return worldPos;
-    }
-
-    private void SpawnEnemy()
-    {
-        if(enemiesToSpawn.Count != 0)
-        {
-            enemyCount++;
-
-            int enemyType = UnityEngine.Random.Range(0, enemiesToSpawn.Count - 1);
-            int row = UnityEngine.Random.Range(0, gridHeight);
-
-            Enemy newEnemy = Instantiate(enemiesToSpawn[enemyType].Prefab).GetComponent<Enemy>();
-            newEnemy.transform.position = grid.GetWorldPosition(gridWidth, row);
-            newEnemy.transform.localScale = Vector3.one * cellSize;
-            newEnemy.rowNum = row;
-            newEnemy.desination = grid.GetWorldPosition(-3, row); //keeps enemy moving until it reaches off screen
-            newEnemy.Parent = this;
-
-            enemiesToSpawn[enemyType].remaining--;
-            if (enemiesToSpawn[enemyType].remaining <= 0)
-            {
-                enemiesToSpawn.RemoveAt(enemyType);
-            }
-        }
-    }
-
-    private void SetSpawnTimer()
-    {
-        spawnTimer = UnityEngine.Random.Range(minSpawnTime, maxSpawnTime);
     }
 }
 

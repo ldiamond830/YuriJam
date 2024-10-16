@@ -11,12 +11,15 @@ public class Projectile : MonoBehaviour
     private float lifetime = -1;
     private bool isPiercing = false;
     private bool isLive = false;
-    private BoxCollider2D box2d;
+    private Collider2D box2d;
+    private Rigidbody2D rigid2d;
 
     // Start is called before the first frame update
     void Start()
     {
-        box2d = transform.GetChild(0).GetComponent<BoxCollider2D>();
+        box2d = GetComponent<Collider2D>();
+        rigid2d = GetComponent<Rigidbody2D>();
+        if (isLive) rigid2d.velocity = Vector3.right * speed;
     }
 
     // Update is called once per frame
@@ -28,9 +31,7 @@ public class Projectile : MonoBehaviour
             {
                 Destroy(gameObject);
             }
-
             lifetime -= Time.deltaTime;
-            transform.position += new Vector3(speed, 0, 0) * Time.deltaTime;
         }
     }
 
@@ -58,17 +59,19 @@ public class Projectile : MonoBehaviour
             return false;
         }
 
+        if (rigid2d) rigid2d.velocity = Vector3.right * speed;
         isLive = true;
         return true;
     }
 
-    public void OnTriggerEnter2D(Collider2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        if (isLive && collision.transform.TryGetComponent<Enemy>(out Enemy enemy))
+        if (isLive && collision.transform.CompareTag("Enemy"))
         {
-            enemy.TakeDamage(attack);
+            collision.transform.GetComponent<Enemy>().TakeDamage(attack);
 
             // Remove projectile if it is single-target
+            // Should object pool at some point
             if (!isPiercing)
             {
                 Destroy(gameObject);
