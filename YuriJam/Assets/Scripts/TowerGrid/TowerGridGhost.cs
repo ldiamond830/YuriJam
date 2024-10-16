@@ -37,22 +37,22 @@ public class TowerGridGhost : MonoBehaviour
         transform.GetChild(0).gameObject.SetActive(e.currGridPosition != TowerGrid.Instance.OFFGRID_POS);
     }
 
-    private void RefreshVisual()
-    {
-        if (visual != null)
-        {
-            Destroy(visual.gameObject);
-            visual = null;
-        }
-
-        data = TowerGrid.Instance.CurrentSelection;
-
-        if (data != null)
-        {
-            visual = Instantiate(data.visual, Vector3.zero, Quaternion.identity);
-            visual.parent = transform;
-            visual.localPosition = Vector3.zero;
-            visual.localEulerAngles = Vector3.zero;
-        }
-    }
+    // private void RefreshVisual()
+    // {
+    //     if (visual != null)
+    //     {
+    //         Destroy(visual.gameObject);
+    //         visual = null;
+    //     }
+    // 
+    //     data = TowerGrid.Instance.CurrentSelection;
+    // 
+    //     if (data != null)
+    //     {
+    //         visual = Instantiate(data.visual, Vector3.zero, Quaternion.identity);
+    //         visual.parent = transform;
+    //         visual.localPosition = Vector3.zero;
+    //         visual.localEulerAngles = Vector3.zero;
+    //     }
+    // }
 }

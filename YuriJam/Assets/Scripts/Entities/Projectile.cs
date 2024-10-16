@@ -1,14 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
-using UnityEditor.U2D.Aseprite;
 using UnityEngine;
 
 public class Projectile : MonoBehaviour
 {
     // Fields
     public float speed;
-    private int power = 0;
+    private Attack attack;
     private float lifetime = -1;
     private bool isPiercing = false;
     private bool isLive = false;
@@ -36,9 +35,9 @@ public class Projectile : MonoBehaviour
     }
 
     // Sets the projectile parameters for shooting
-    public void Initialize(int power, float range, bool canHitMultiple)
+    public void Initialize(int power, float range, bool canHitMultiple = false, List<StatusEffect> effects = null)
     {
-        this.power = power;
+        attack = new Attack(power, effects);
         lifetime = range / speed;
         isPiercing = canHitMultiple;
     }
@@ -67,7 +66,7 @@ public class Projectile : MonoBehaviour
     {
         if (isLive && collision.transform.TryGetComponent<Enemy>(out Enemy enemy))
         {
-            enemy.TakeDamage(power);
+            enemy.TakeDamage(attack);
 
             // Remove projectile if it is single-target
             if (!isPiercing)

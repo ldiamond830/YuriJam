@@ -20,11 +20,18 @@ public class Enemy : MonoBehaviour
     private float attackTimer;
     private EnemyMode enemyMode = EnemyMode.move;
     private TowerGrid parent;
+    private List<StatusEffect> afflictions = new();
 
+    // Properties
     public TowerGrid Parent
     {
         set { parent = value; } 
     }
+    public List<StatusEffect> Afflictions
+    {
+        get { return afflictions; }
+    }
+
     // Events 
     public event EventHandler<EventArgs> OnDeath;
 
@@ -69,6 +76,19 @@ public class Enemy : MonoBehaviour
             parent.EnemyCount--;
             Destroy(gameObject);
         }
+    }
+
+    public void TakeDamage(Attack attack)
+    {
+        // Apply any status effects
+        if (attack.effects.Count > 0)
+        {
+            foreach (StatusEffect se in attack.effects)
+                se.Afflict(this);
+        }
+
+        // Deal attack damage
+        TakeDamage(attack.power);
     }
 
     public void OnTriggerEnter2D(Collider2D collision)

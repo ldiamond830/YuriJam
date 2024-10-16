@@ -18,6 +18,8 @@ public class Tower : MonoBehaviour
     public TowerStats stats;
     private float actCooldown;
     public int rowNum;
+    private Tower linked;
+
     // Events
     public event EventHandler<EventArgs> OnDeath;
 
@@ -58,5 +60,34 @@ public class Tower : MonoBehaviour
             OnDeath?.Invoke(this, new EventArgs());
             Destroy(gameObject);
         }
+    }
+
+    public bool LinkToTower(Tower tower)
+    {
+        // Ensure both towers are unlinked
+        if (linked != null || tower.linked != null)
+        {
+            Debug.Log("Tower link failed: tower is already linked!");
+            return false;
+        }
+
+        // Link towers together
+        linked = tower;
+        tower.linked = this;
+
+        // Undo link if either tower dies
+        OnDeath += tower.LinkDeath;
+        tower.OnDeath += LinkDeath;
+
+        // ACTIVATE LINK EFFECTS
+
+        return true;
+    }
+
+    private void LinkDeath(object o, EventArgs e)
+    {
+        // UNDO LINK EFFECTS
+
+        linked = null;
     }
 }

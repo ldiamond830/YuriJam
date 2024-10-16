@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu]
+[CreateAssetMenu(menuName = "YuriJam/TowerSO")]
 public class TowerSO : ScriptableObject
 {
     // Fields
     public new string name;
     public Transform prefab;
-    public Transform visual;
     public Resource buildCost;
 }

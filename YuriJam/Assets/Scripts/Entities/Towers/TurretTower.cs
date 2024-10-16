@@ -10,7 +10,7 @@ public class TurretTower : Tower
 
     protected override void TakeAction()
     {
-        // Create projectile using stats
+        // Create projectile using stats (created at center of grid cell)
         Projectile p = Instantiate(projectile, transform.position + Vector3.one * transform.localScale.x / 2, Quaternion.identity).GetComponent<Projectile>();
         p.transform.localScale *= transform.localScale.x;
         p.Initialize(stats.baseStats.power, stats.range * transform.localScale.x, isPiercing);
