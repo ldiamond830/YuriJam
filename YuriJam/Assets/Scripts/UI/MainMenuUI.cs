@@ -31,4 +31,6 @@ public class MainMenuUI : MonoBehaviour
         PlayerSaveManager.Instance.Save();
         Application.Quit();
     }
+
+    
 }

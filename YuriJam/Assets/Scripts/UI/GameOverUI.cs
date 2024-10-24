@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class LossScreenUI : MonoBehaviour
+public class GameOverUI : MonoBehaviour
 {
     public void Restart()
     {
@@ -19,5 +19,12 @@ public class LossScreenUI : MonoBehaviour
     {
         PlayerSaveManager.Instance.Save();
         Application.Quit();
+    }
+
+    //testing only while visual novel segments unfinished, I'm just putting it here to save making a whole separate script
+    public void TempContinue()
+    {
+        LevelManager manager = FindAnyObjectByType<LevelManager>();
+        SceneManager.LoadScene(manager.nextLevel);
     }
 }

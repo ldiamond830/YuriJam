@@ -8,4 +8,22 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/ProtoGame.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/Level1.unity
+    guid: 813d56f9c2ddc4d4f898476dfe8bf650
+  - enabled: 1
+    path: Assets/Scenes/Level2.unity
+    guid: 94c356a05c65e0347bbe76b48a2de9f9
+  - enabled: 1
+    path: Assets/Scenes/LossScreen.unity
+    guid: 7e4296a0394395f4eab2122d4dc7087c
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: dbc2276f1a933cd4dbdb6f8db60b8f02
+  - enabled: 1
+    path: Assets/Scenes/VisualNovel1.unity
+    guid: 4382a0ada5f0c9d40a6cc594a811e30f
+  - enabled: 1
+    path: Assets/Scenes/WinScreen.unity
+    guid: f1fe3eb7317579045add676275c348cc
   m_configObjects: {}
