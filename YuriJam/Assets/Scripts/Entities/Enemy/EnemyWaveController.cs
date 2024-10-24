@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyWaveController : MonoBehaviour
 {
@@ -16,6 +17,7 @@ public class EnemyWaveController : MonoBehaviour
     private float spawnTimer;
     [SerializeField] private List<EnemySpawnSO> enemiesToSpawn;
     private int enemyCount;
+    public LevelManager levelManager;
 
     // Properties
     public int EnemyCount
@@ -48,6 +50,7 @@ public class EnemyWaveController : MonoBehaviour
         if (enemyCount == 0 && enemiesToSpawn.Count == 0)
         {
             Debug.Log("Player wins");
+            SceneManager.LoadScene(levelManager.nextLevel);
         }
     }
 

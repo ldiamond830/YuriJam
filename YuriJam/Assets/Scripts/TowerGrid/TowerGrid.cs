@@ -24,6 +24,8 @@ public class TowerGrid : MonoBehaviour
     public event EventHandler<GridSelectEventArgs> OnSelectionChange;
     public event EventHandler<GridMoveEventArgs> OnCellMove;
 
+   
+
     // Properties
     public static TowerGrid Instance // Singleton property for global access
     {

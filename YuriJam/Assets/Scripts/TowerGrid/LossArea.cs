@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LossArea : MonoBehaviour
 {
@@ -8,7 +9,7 @@ public class LossArea : MonoBehaviour
     {
         if(collision.GetComponent<Enemy>() != null)
         {
-            Debug.Log("Player loses");
+            SceneManager.LoadScene("LossScreen");
         }
     }
 }
